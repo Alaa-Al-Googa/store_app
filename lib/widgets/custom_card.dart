@@ -5,7 +5,7 @@ import 'package:store/screens/update_product_screen.dart';
 class CustomCard extends StatelessWidget {
   CustomCard({super.key, required this.productModel});
 
-  ProductModel productModel;
+  final ProductModel productModel;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class CustomCard extends StatelessWidget {
                   blurRadius: 50,
                   color: Colors.green.withOpacity(.1),
                   spreadRadius: 20,
-                  offset: Offset(1, 1),
+                  offset: const Offset(1, 1),
                 ),
               ],
             ),
@@ -38,15 +38,15 @@ class CustomCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      productModel.title.substring(0, 6),
+                      productModel.title.length > 6
+                          ? productModel.title.substring(0, 6)
+                          : productModel.title,
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 16,
                       ),
                     ),
-                    const SizedBox(
-                      height: 3,
-                    ),
+                    const SizedBox(height: 3),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -70,10 +70,31 @@ class CustomCard extends StatelessWidget {
           Positioned(
             right: 32,
             top: -60,
-            child: Image.network(
-              productModel.image,
-              height: 100,
-              width: 100,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                productModel.image,
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    'assets/images/placeholder.png',
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 100,
+                    width: 100,
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(strokeWidth: 2),
+                  );
+                },
+              ),
             ),
           ),
         ],

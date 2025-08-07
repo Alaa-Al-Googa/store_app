@@ -86,6 +86,24 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                   const SizedBox(
                     height: 50,
                   ),
+                  // CustomButton(
+                  //   TextButton: 'Update',
+                  //   ColorButton: Colors.blue,
+                  //   onTap: () async {
+                  //     isLoading = true;
+                  //     setState(() {});
+                  //     try {
+                  //       await UpdateProduct(productModel);
+                  //       print('Update Data');
+                  //       ShowSnackBar(context, 'Update Data');
+                  //     } catch (e) {
+                  //       ShowSnackBar(context, 'Error');
+                  //       print(e.toString());
+                  //     }
+                  //     isLoading = false;
+                  //     setState(() {});
+                  //   },
+                  // ),
                   CustomButton(
                     TextButton: 'Update',
                     ColorButton: Colors.blue,
@@ -93,8 +111,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                       isLoading = true;
                       setState(() {});
                       try {
-                        await UpdateProduct(productModel);
-                        print('Update Data');
+                        await updateProduct(productModel);
                         ShowSnackBar(context, 'Update Data');
                       } catch (e) {
                         ShowSnackBar(context, 'Error');
@@ -111,12 +128,13 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     );
   }
 
-  Future<void> UpdateProduct(ProductModel productModel) async {
+  Future<void> updateProduct(ProductModel productModel) async {
+    print('🔁 تم استدعاء updateProduct');
     await UpdateProductService().updateProduct(
-      title: productName == null ? productModel.title : productName!,
-      price: price != null ? double.parse(price!) : productModel.price,
-      desc: desc == null ? productModel.description : desc!,
-      image: image == null ? productModel.image : image!,
+      title: productName ?? productModel.title,
+      price: double.tryParse(price ?? '') ?? productModel.price,
+      desc: desc ?? productModel.description,
+      image: image ?? productModel.image,
       category: productModel.category,
       id: productModel.id,
     );

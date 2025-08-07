@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 
 class CustumTextField extends StatelessWidget {
-  CustumTextField({required this.hintText,required this.inputType, this.onChanged});
+  CustumTextField(
+      {required this.hintText,
+      required this.inputType,
+      this.onChanged,
+      this.controller});
 
   String hintText;
-  TextInputType ? inputType;
+  TextInputType? inputType;
   Function(String)? onChanged;
+  TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-        keyboardType: inputType,
-        onChanged: onChanged,
-        decoration: InputDecoration(
+      controller: controller,
+      keyboardType: inputType,
+      onChanged: onChanged,
+      decoration: InputDecoration(
         hintText: hintText,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -23,6 +29,4 @@ class CustumTextField extends StatelessWidget {
       ),
     );
   }
-
-
 }

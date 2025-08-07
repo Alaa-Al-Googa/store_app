@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:store/models/product_model.dart';
+import 'package:store/services/add_product.dart';
 import 'package:store/services/categories_service.dart';
 import 'package:store/services/get_all_prodect_service.dart';
 import 'package:store/widgets/category_list_view.dart';
+import 'package:store/widgets/custom_button.dart';
 import 'package:store/widgets/custom_card.dart';
 import 'package:store/widgets/custom_text_field.dart';
 
@@ -19,6 +21,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<ProductModel>> productsFuture;
   String selectedCategory = 'all';
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
+  final TextEditingController imageController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
 
   @override
   void initState() {
@@ -67,20 +74,96 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           showModalBottomSheet<void>(
             context: context,
+            //isScrollControlled: true,
             builder: (BuildContext context) {
               return Container(
-                height: 200,
-                color: Colors.white,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white),
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CustumTextField(
-                        hintText: 'Product Title',
-                        inputType: TextInputType.text,
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustumTextField(
+                          controller: titleController,
+                          hintText: 'Product Title',
+                          inputType: TextInputType.text,
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        CustumTextField(
+                          controller: priceController,
+                          hintText: 'Product Price',
+                          inputType: TextInputType.text,
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        CustumTextField(
+                          controller: descController,
+                          hintText: 'Product Description',
+                          inputType: TextInputType.text,
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        CustumTextField(
+                          controller: imageController,
+                          hintText: 'Product Image',
+                          inputType: TextInputType.text,
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        CustumTextField(
+                          controller: categoryController,
+                          hintText: 'Product Category',
+                          inputType: TextInputType.text,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        CustomButton(
+                          TextButton: 'Add Product',
+                          ColorButton: Colors.blue,
+                          onTap: () async {
+                            try {
+                              AddProduct addProduct = AddProduct();
+
+                              ProductModel product =
+                                  await addProduct.addProduct(
+                                title: titleController.text,
+                                price: priceController.text,
+                                desc: descController.text,
+                                image: imageController.text,
+                                category: categoryController.text,
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'تمت إضافة المنتج: ${product.title}')),
+                              );
+                              Navigator.of(context).pop();
+                              // تنظيف الحقول
+                              titleController.clear();
+                              priceController.clear();
+                              descController.clear();
+                              imageController.clear();
+                              categoryController.clear();
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('خطأ: $e')),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
